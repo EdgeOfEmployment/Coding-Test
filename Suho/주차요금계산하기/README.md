@@ -34,42 +34,52 @@
 
 ```python
 import math
-
-
 def solution(fees, records):
-    in_time = {}     # 차량 번호: 입차 시간
-    total_time = {}  # 차량 번호: 누적 주차 시간
-    answer = []
 
+    in_time = {}  # 차량번호: 입차 시간
+    total_time = {} # 차량번호: 누적 주차 시간
+    answer = []
+    # 차량 기준으로 다시 정렬.
+    # out에서 가장 최근의 in시간을 빼야함.
     for record in records:
-        time, car_num, history = record.split()
+        time,car_num,history = record.split()
+        #시간 -> 분으로 바꾸기
         hour, minute = map(int, time.split(":"))
-        current_time = hour * 60 + minute
+        time_min = hour * 60 + minute
 
         if history == "IN":
-            in_time[car_num] = current_time
+            # 입차 시간 저장
+            in_time[car_num] =time_min
+
         else:
-            parking_time = current_time - in_time.pop(car_num)
-            total_time[car_num] = total_time.get(car_num, 0) + parking_time
+            # 주차 시간 계산
+            park_t = time_min-in_time[car_num]
+            # total_time에 누적
+            total_time[car_num] = total_time.get(car_num, 0) + park_t
+            # in_time에서 해당 차량 제거
+            del in_time[car_num]
+    # in_time에 남아 있는 미출차 차량 처리
+    # 만약 출차 되지 않았다면, 23:59에서 입차한 시간을 빼야함.
+    if in_time:
+        for car_num in in_time:
+            park_t = 23*60+59-in_time[car_num]
+            total_time[car_num] = total_time.get(car_num, 0) + park_t
 
-    end_time = 23 * 60 + 59
+    answer = []
 
-    for car_num, entered_time in in_time.items():
-        parking_time = end_time - entered_time
-        total_time[car_num] = total_time.get(car_num, 0) + parking_time
-
-    base_time, base_fee, unit_time, unit_fee = fees
-
+    # 차량별 요금 계산
+    #올림함수
+    #math.ceil(숫자)
+    # 기본 시간 180분(fees[0]) 보다 작으면 5000원(fees[1])
+    #180분 보다 크면 5000원 + math.ceil((누적주차시간-180)/10 =(fees[2])) * 600 =(fees[3])
     for car_num in sorted(total_time):
-        parking_time = total_time[car_num]
-
-        if parking_time <= base_time:
-            fee = base_fee
+        v = total_time[car_num]
+        if fees[0]>=v:
+            total_fee = fees[1]
         else:
-            extra_time = parking_time - base_time
-            fee = base_fee + math.ceil(extra_time / unit_time) * unit_fee
-
-        answer.append(fee)
+            total_fee = fees[1] +  math.ceil((v-fees[0])/fees[2]) * fees[3]
+        # answer에 추가
+        answer.append(total_fee)
 
     return answer
 ```
@@ -113,12 +123,6 @@ O(n + k \log k)
 
 차량 수는 기록 수보다 많을 수 없으므로 최악의 경우 `O(n log n)`으로 표현할 수 있다. 차량별 입차 시간과 누적 시간을 저장하므로 공간복잡도는 `O(k)`, 최악의 경우 `O(n)`이다.
 
-### AI 활용
-
-- 차량 번호를 key로 하는 딕셔너리를 사용하는 방향은 직접 떠올렸지만, 입차 시간과 누적 주차 시간을 어떤 변수로 나눠 관리해야 할지 막혔다.
-- 이 과정에서 `in_time`과 `total_time`이라는 두 딕셔너리로 분리하는 방법을 도움받았다.
-- 문제에 주어진 입력 조건이 시간복잡도와 어떤 관계가 있는지 설명을 도움받았다.
-
 ## 4. 최종 정리
 
 - 여러 기록을 같은 대상별로 묶어야 할 때는 대상의 식별자인 차량 번호를 딕셔너리 key로 사용할 수 있다.
@@ -127,3 +131,9 @@ O(n + k \log k)
 - `dict.pop(key)`은 값을 가져오는 동시에 해당 key를 삭제한다.
 - 정렬 때문에 전체 시간복잡도는 `O(n + k log k)`, 최악의 경우 `O(n log n)`이다.
 - 입력 조건을 확인한 뒤 반복문뿐 아니라 정렬과 내부 연산의 비용까지 함께 계산해야 한다.
+
+### AI 활용
+
+- 차량 번호를 key로 하는 딕셔너리를 사용하는 방향은 직접 떠올렸지만, 입차 시간과 누적 주차 시간을 어떤 변수로 나눠 관리해야 할지 막혔다.
+- 이 과정에서 `in_time`과 `total_time`이라는 두 딕셔너리로 분리하는 방법을 도움받았다.
+- 문제에 주어진 입력 조건이 시간복잡도와 어떤 관계가 있는지 설명을 도움받았다.
