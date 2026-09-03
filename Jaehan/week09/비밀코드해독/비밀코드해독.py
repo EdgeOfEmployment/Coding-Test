@@ -10,7 +10,7 @@ def solution(n, q, ans):
     
     answer = 0
     
-    # 1. 1부터 n까지의 수 중에서 5개를 고르는 모든 조합 생성 ($n\mathrm{C}_5$)
+    # 1. 1부터 n까지의 수 중에서 5개를 고르는 모든 조합 생성
     all_comb = combinations(range(1, n + 1), 5)
     
     # 2. 모든 조합을 순회하며 조건 검증
