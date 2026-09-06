@@ -19,7 +19,7 @@ class Solution {
                 answer += 10-num;
                 storey += 10; // 6부터는 숫자를 +1하는데 자연스레 앞자리 수가 바뀌니까 더해줌
             }else{ // 5일때
-                int first = (storey/10)%10; // 5를 -1, +1하고 난 뒤의 앞자리 확인
+                int first = (storey/10)%10; // 5앞의자리 숫자 확인
 
                 if(first<5){
                     answer += num;
