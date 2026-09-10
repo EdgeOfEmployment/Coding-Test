@@ -9,7 +9,7 @@ def solution(users, emoticons):
 
     answer = [0, 0]
 
-    # 1. 이모티콘 개수만큼 할인율을 중복 조합으로 뽑아 모든 경우를 생성
+    # 1. 이모티콘마다 할인율을 하나씩 배정하는 모든 경우를 생성 (중복순열)
     for rates in product([10, 20, 30, 40], repeat=len(emoticons)):
 
         plus = 0    # 이모티콘 플러스 가입자 수
