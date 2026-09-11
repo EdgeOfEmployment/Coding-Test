@@ -9,7 +9,7 @@ import java.util.*;
 class Solution {
     public int solution(int k, int[] tangerine) {
         int answer = 0;
-        Map<Integer, Integer> map = new HashMap<>(); //귤을 담을 리스트
+        Map<Integer, Integer> map = new HashMap<>(); //귤을 담을 맵
         int n = tangerine.length;
 
         // 귤을 탐색함
