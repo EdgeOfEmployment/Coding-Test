@@ -1,3 +1,4 @@
+# 정렬 + 최소 힙
 import heapq
 
 def solution(book_time):
