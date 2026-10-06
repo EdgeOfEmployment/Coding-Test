@@ -1,0 +1,25 @@
+# 정렬 + 최소 힙
+import heapq
+
+def solution(book_time):
+    bookings = []
+    
+    for start, end in book_time:
+        sh, sm = map(int, start.split(":"))
+        eh, em = map(int, end.split(":"))
+        
+        start_time = sh*60 + sm
+        end_time = eh*60 + em + 10
+        
+        bookings.append((start_time, end_time))
+    
+    bookings.sort()
+    
+    rooms = []
+    
+    for start, end in bookings:
+        if rooms and rooms[0] <= start:
+            heapq.heappop(rooms)
+        
+        heapq.heappush(rooms, end)
+    return len(rooms)
